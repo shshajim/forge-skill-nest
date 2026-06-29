@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /learn
+Disallow: /instructor
+Disallow: /admin
+Disallow: /checkout
