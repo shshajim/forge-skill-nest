@@ -14,7 +14,7 @@ const courseQ = (slug: string) =>
 
 export const Route = createFileRoute("/courses/$slug")({
   head: ({ loaderData }) => ({
-    meta: loaderData?.course
+    meta: loaderData && "course" in loaderData && loaderData.course
       ? [
           { title: `${loaderData.course.title} — LearnForge` },
           { name: "description", content: loaderData.course.subtitle ?? loaderData.course.description ?? "" },

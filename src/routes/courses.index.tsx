@@ -11,7 +11,7 @@ import { CATEGORIES, DIFFICULTIES, SORTS } from "@/lib/categories";
 
 const coursesQ = queryOptions({ queryKey: ["courses", "published"], queryFn: () => listPublishedCourses() });
 
-export const Route = createFileRoute("/courses")({
+export const Route = createFileRoute("/courses/")({
   head: () => ({
     meta: [
       { title: "All Courses — LearnForge" },
