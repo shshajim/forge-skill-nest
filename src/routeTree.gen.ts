@@ -18,6 +18,9 @@ import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutCourseIdRouteImport } from './routes/checkout.$courseId'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedInstructorIndexRouteImport } from './routes/_authenticated/instructor.index'
+import { Route as AuthenticatedInstructorCreateRouteImport } from './routes/_authenticated/instructor.create'
 import { Route as AuthenticatedLearnCourseIdLessonIdRouteImport } from './routes/_authenticated/learn.$courseId.$lessonId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -64,6 +67,23 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedInstructorIndexRoute =
+  AuthenticatedInstructorIndexRouteImport.update({
+    id: '/instructor/',
+    path: '/instructor/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedInstructorCreateRoute =
+  AuthenticatedInstructorCreateRouteImport.update({
+    id: '/instructor/create',
+    path: '/instructor/create',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLearnCourseIdLessonIdRoute =
   AuthenticatedLearnCourseIdLessonIdRouteImport.update({
     id: '/learn/$courseId/$lessonId',
@@ -75,22 +95,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/checkout/$courseId': typeof CheckoutCourseIdRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/payment/success': typeof PaymentSuccessRoute
   '/courses/': typeof CoursesIndexRoute
+  '/instructor/create': typeof AuthenticatedInstructorCreateRoute
+  '/instructor/': typeof AuthenticatedInstructorIndexRoute
   '/learn/$courseId/$lessonId': typeof AuthenticatedLearnCourseIdLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/checkout/$courseId': typeof CheckoutCourseIdRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/payment/success': typeof PaymentSuccessRoute
   '/courses': typeof CoursesIndexRoute
+  '/instructor/create': typeof AuthenticatedInstructorCreateRoute
+  '/instructor': typeof AuthenticatedInstructorIndexRoute
   '/learn/$courseId/$lessonId': typeof AuthenticatedLearnCourseIdLessonIdRoute
 }
 export interface FileRoutesById {
@@ -99,11 +125,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/checkout/$courseId': typeof CheckoutCourseIdRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/payment/success': typeof PaymentSuccessRoute
   '/courses/': typeof CoursesIndexRoute
+  '/_authenticated/instructor/create': typeof AuthenticatedInstructorCreateRoute
+  '/_authenticated/instructor/': typeof AuthenticatedInstructorIndexRoute
   '/_authenticated/learn/$courseId/$lessonId': typeof AuthenticatedLearnCourseIdLessonIdRoute
 }
 export interface FileRouteTypes {
@@ -112,22 +141,28 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/sitemap.xml'
+    | '/admin'
     | '/dashboard'
     | '/checkout/$courseId'
     | '/courses/$slug'
     | '/payment/success'
     | '/courses/'
+    | '/instructor/create'
+    | '/instructor/'
     | '/learn/$courseId/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/sitemap.xml'
+    | '/admin'
     | '/dashboard'
     | '/checkout/$courseId'
     | '/courses/$slug'
     | '/payment/success'
     | '/courses'
+    | '/instructor/create'
+    | '/instructor'
     | '/learn/$courseId/$lessonId'
   id:
     | '__root__'
@@ -135,11 +170,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/sitemap.xml'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/checkout/$courseId'
     | '/courses/$slug'
     | '/payment/success'
     | '/courses/'
+    | '/_authenticated/instructor/create'
+    | '/_authenticated/instructor/'
     | '/_authenticated/learn/$courseId/$lessonId'
   fileRoutesById: FileRoutesById
 }
@@ -219,6 +257,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/instructor/': {
+      id: '/_authenticated/instructor/'
+      path: '/instructor'
+      fullPath: '/instructor/'
+      preLoaderRoute: typeof AuthenticatedInstructorIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/instructor/create': {
+      id: '/_authenticated/instructor/create'
+      path: '/instructor/create'
+      fullPath: '/instructor/create'
+      preLoaderRoute: typeof AuthenticatedInstructorCreateRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/learn/$courseId/$lessonId': {
       id: '/_authenticated/learn/$courseId/$lessonId'
       path: '/learn/$courseId/$lessonId'
@@ -230,12 +289,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInstructorCreateRoute: typeof AuthenticatedInstructorCreateRoute
+  AuthenticatedInstructorIndexRoute: typeof AuthenticatedInstructorIndexRoute
   AuthenticatedLearnCourseIdLessonIdRoute: typeof AuthenticatedLearnCourseIdLessonIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInstructorCreateRoute: AuthenticatedInstructorCreateRoute,
+  AuthenticatedInstructorIndexRoute: AuthenticatedInstructorIndexRoute,
   AuthenticatedLearnCourseIdLessonIdRoute:
     AuthenticatedLearnCourseIdLessonIdRoute,
 }
