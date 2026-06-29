@@ -13,15 +13,8 @@ const courseQ = (slug: string) =>
   queryOptions({ queryKey: ["course", slug], queryFn: () => getCourseBySlug({ data: { slug } }) });
 
 export const Route = createFileRoute("/courses/$slug")({
-  head: ({ loaderData }) => ({
-    meta: loaderData && "course" in loaderData && loaderData.course
-      ? [
-          { title: `${loaderData.course.title} — LearnForge` },
-          { name: "description", content: loaderData.course.subtitle ?? loaderData.course.description ?? "" },
-          { property: "og:title", content: loaderData.course.title },
-          { property: "og:description", content: loaderData.course.subtitle ?? "" },
-        ]
-      : [{ title: "Course — LearnForge" }],
+  head: () => ({
+    meta: [{ title: "Course — LearnForge" }],
   }),
   loader: async ({ params, context }) => {
     const data = await context.queryClient.ensureQueryData(courseQ(params.slug));
