@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       { title: "LearnForge — Learn Without Limits" },
       { name: "description", content: "Master in-demand skills with expert-led courses. 10,000+ students, 4.8 avg rating, 200+ courses." },
       { property: "og:title", content: "LearnForge — Learn Without Limits" },
-      { property: "og:description", content: "Expert-led courses in development, design, AI, business and marketing." },
+      { property: "og:description", content: "Master in-demand skills with expert-led courses. 10,000+ students, 4.8 avg rating, 200+ courses." },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(coursesQ),
