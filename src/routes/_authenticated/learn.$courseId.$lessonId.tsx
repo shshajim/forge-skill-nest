@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState, Suspense } from "react";
-import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Loader2, Award } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -138,12 +138,27 @@ function Body() {
             >
               <ChevronLeft className="size-4" /> Previous
             </Button>
-            <Button
-              disabled={!next}
-              onClick={() => next && navigate({ to: "/learn/$courseId/$lessonId", params: { courseId, lessonId: next.id } })}
-            >
-              Next <ChevronRight className="size-4" />
-            </Button>
+            {next ? (
+              <Button
+                onClick={() => navigate({ to: "/learn/$courseId/$lessonId", params: { courseId, lessonId: next.id } })}
+              >
+                Next <ChevronRight className="size-4" />
+              </Button>
+            ) : pct === 100 ? (
+              <Button
+                className="bg-gradient-to-r from-primary to-purple-500 text-white"
+                onClick={() => {
+                  toast.success("Course complete! Your certificate is ready.");
+                  navigate({ to: "/dashboard" });
+                }}
+              >
+                <Award className="size-4" /> Get your certificate
+              </Button>
+            ) : (
+              <Button disabled>
+                Next <ChevronRight className="size-4" />
+              </Button>
+            )}
           </div>
 
           <Tabs defaultValue="overview" className="mt-8">

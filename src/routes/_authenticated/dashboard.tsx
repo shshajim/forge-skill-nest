@@ -9,7 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { getMyDashboard, toggleWishlist } from "@/lib/learner.functions";
 import { CourseCard } from "@/components/CourseCard";
 import { downloadCertificatePDF } from "@/lib/certificate-pdf";
+import { courseImage } from "@/lib/course-images";
+import { claimAdmin } from "@/lib/admin.functions";
 import { toast } from "sonner";
+import { ShieldCheck } from "lucide-react";
 
 const dashQ = queryOptions({ queryKey: ["dashboard"], queryFn: () => getMyDashboard() });
 
@@ -40,10 +43,31 @@ function Body() {
   const certCount = data.certificates.length;
   const streak = Math.min(7, data.enrollments.length + 1);
 
+  const claim = useServerFn(claimAdmin);
+
   return (
     <>
-      <h1 className="text-3xl sm:text-4xl font-bold">Welcome back, {data.profile?.full_name?.split(" ")[0] ?? "learner"}!</h1>
-      <p className="text-muted-foreground mt-1">Keep the momentum going.</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold">Welcome back, {data.profile?.full_name?.split(" ")[0] ?? "learner"}!</h1>
+          <p className="text-muted-foreground mt-1">Keep the momentum going.</p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={async () => {
+            try {
+              const res = await claim();
+              toast.success(res.alreadyAdmin ? "You're already an admin — opening /admin" : "You're now the LearnForge admin!");
+              window.location.href = "/admin";
+            } catch (e: any) {
+              toast.error(e?.message ?? "Could not claim admin");
+            }
+          }}
+        >
+          <ShieldCheck className="size-4" /> Claim admin
+        </Button>
+      </div>
 
       <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat icon={<BookOpen className="size-5" />} label="Courses enrolled" value={data.enrollments.length} />
@@ -69,7 +93,10 @@ function Body() {
               const pct = p.total > 0 ? Math.round((p.completed / p.total) * 100) : 0;
               return (
                 <div key={e.id} className="rounded-xl border bg-card overflow-hidden card-hover">
-                  <div className={`aspect-video bg-gradient-to-br ${c.thumbnail_gradient ?? "from-blue-900 to-purple-700"}`} />
+                  <div className={`relative aspect-video bg-gradient-to-br ${c.thumbnail_gradient ?? "from-blue-900 to-purple-700"} overflow-hidden`}>
+                    <img src={courseImage(c.category)} alt={c.title} loading="lazy" className="absolute inset-0 size-full object-cover opacity-90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  </div>
                   <div className="p-5 space-y-3">
                     <Badge className="bg-secondary text-secondary-foreground border-0">{c.category}</Badge>
                     <h3 className="font-semibold leading-snug line-clamp-2">{c.title}</h3>
