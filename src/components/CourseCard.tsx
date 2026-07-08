@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Star, Users, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice, formatCount } from "@/lib/format";
+import { courseImage } from "@/lib/course-images";
 
 export interface CourseCardData {
   slug: string;
@@ -29,12 +30,19 @@ export function CourseCard({ course }: { course: CourseCardData }) {
       params={{ slug: course.slug }}
       className="group block overflow-hidden rounded-xl border bg-card card-hover"
     >
-      <div className={`relative aspect-video bg-gradient-to-br ${gradient} p-5 flex flex-col justify-end`}>
+      <div className={`relative aspect-video bg-gradient-to-br ${gradient} overflow-hidden`}>
+        <img
+          src={courseImage(course.category)}
+          alt={course.title}
+          loading="lazy"
+          className="absolute inset-0 size-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute top-3 left-3 flex gap-2">
-          <Badge className="bg-black/40 text-white border-0 backdrop-blur-sm">{course.category}</Badge>
+          <Badge className="bg-black/50 text-white border-0 backdrop-blur-sm">{course.category}</Badge>
           {isFree && <Badge className="bg-success text-success-foreground border-0">FREE</Badge>}
         </div>
-        <p className="text-white/90 text-xs font-medium drop-shadow">{course.difficulty}</p>
+        <p className="absolute bottom-3 left-4 text-white/90 text-xs font-medium drop-shadow">{course.difficulty}</p>
       </div>
       <div className="p-5 space-y-3">
         <h3 className="font-semibold leading-snug line-clamp-2 group-hover:text-primary transition-colors">

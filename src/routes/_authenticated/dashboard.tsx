@@ -9,7 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { getMyDashboard, toggleWishlist } from "@/lib/learner.functions";
 import { CourseCard } from "@/components/CourseCard";
 import { downloadCertificatePDF } from "@/lib/certificate-pdf";
+import { courseImage } from "@/lib/course-images";
+import { claimAdmin } from "@/lib/admin.functions";
 import { toast } from "sonner";
+import { ShieldCheck } from "lucide-react";
 
 const dashQ = queryOptions({ queryKey: ["dashboard"], queryFn: () => getMyDashboard() });
 
@@ -69,7 +72,10 @@ function Body() {
               const pct = p.total > 0 ? Math.round((p.completed / p.total) * 100) : 0;
               return (
                 <div key={e.id} className="rounded-xl border bg-card overflow-hidden card-hover">
-                  <div className={`aspect-video bg-gradient-to-br ${c.thumbnail_gradient ?? "from-blue-900 to-purple-700"}`} />
+                  <div className={`relative aspect-video bg-gradient-to-br ${c.thumbnail_gradient ?? "from-blue-900 to-purple-700"} overflow-hidden`}>
+                    <img src={courseImage(c.category)} alt={c.title} loading="lazy" className="absolute inset-0 size-full object-cover opacity-90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  </div>
                   <div className="p-5 space-y-3">
                     <Badge className="bg-secondary text-secondary-foreground border-0">{c.category}</Badge>
                     <h3 className="font-semibold leading-snug line-clamp-2">{c.title}</h3>
