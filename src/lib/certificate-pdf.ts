@@ -71,25 +71,40 @@ export function downloadCertificatePDF(input: CertificateInput) {
   doc.setFontSize(18);
   doc.text(input.courseTitle, W / 2, 142, { align: "center", maxWidth: W - 60 });
 
-  // Date + signature row
+  // Date + signatures row (3 columns: date, instructor, founder)
   const date = typeof input.issuedAt === "string" ? new Date(input.issuedAt) : input.issuedAt;
   const dateStr = date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   const y = 172;
+  const col1 = 55;
+  const col2 = W / 2;
+  const col3 = W - 55;
+
   doc.setDrawColor(120, 140, 180);
   doc.setLineWidth(0.3);
-  doc.line(40, y, 110, y);
-  doc.line(W - 110, y, W - 40, y);
+  doc.line(col1 - 30, y, col1 + 30, y);
+  doc.line(col2 - 35, y, col2 + 35, y);
+  doc.line(col3 - 30, y, col3 + 30, y);
 
+  // Signatures (italic script look)
+  doc.setFont("times", "italic");
+  doc.setFontSize(14);
+  doc.setTextColor(255, 255, 255);
+  doc.text(input.instructorName, col2, y - 2, { align: "center" });
+  doc.text("Shajim Ahmed", col3, y - 2, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
   doc.setTextColor(220, 230, 250);
   doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.text(dateStr, 75, y + 6, { align: "center" });
-  doc.text(input.instructorName, W - 75, y + 6, { align: "center" });
+  doc.text(dateStr, col1, y + 6, { align: "center" });
+  doc.setFontSize(9);
+  doc.text(input.instructorName, col2, y + 6, { align: "center" });
+  doc.text("Shajim Ahmed", col3, y + 6, { align: "center" });
 
   doc.setTextColor(150, 170, 200);
-  doc.setFontSize(8);
-  doc.text("DATE OF COMPLETION", 75, y + 12, { align: "center" });
-  doc.text("INSTRUCTOR", W - 75, y + 12, { align: "center" });
+  doc.setFontSize(7);
+  doc.text("DATE OF COMPLETION", col1, y + 11, { align: "center" });
+  doc.text("COURSE INSTRUCTOR", col2, y + 11, { align: "center" });
+  doc.text("FOUNDER, LEARNFORGE", col3, y + 11, { align: "center" });
 
   // Cert ID
   doc.setFontSize(7);

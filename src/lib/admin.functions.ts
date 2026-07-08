@@ -2,6 +2,45 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
+export const claimAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { count } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id", { count: "exact", head: true })
+      .eq("role", "admin");
+    if ((count ?? 0) > 0) {
+      const { data: mine } = await supabaseAdmin
+        .from("user_roles")
+        .select("user_id")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (mine) return { ok: true, alreadyAdmin: true };
+      throw new Error("An admin already exists. Ask them to promote you.");
+    }
+    const { error } = await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: "admin" });
+    if (error) throw new Error(error.message);
+    return { ok: true, alreadyAdmin: false };
+  });
+
+export const promoteToInstructor = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ userId: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    await ensureAdmin(supabase, userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: data.userId, role: "instructor" });
+    if (error && !error.message.includes("duplicate")) throw new Error(error.message);
+    return { ok: true };
+  });
+
+
 async function ensureAdmin(supabase: any, userId: string) {
   const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (!data) throw new Error("Forbidden: admin role required");
