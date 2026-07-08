@@ -43,10 +43,31 @@ function Body() {
   const certCount = data.certificates.length;
   const streak = Math.min(7, data.enrollments.length + 1);
 
+  const claim = useServerFn(claimAdmin);
+
   return (
     <>
-      <h1 className="text-3xl sm:text-4xl font-bold">Welcome back, {data.profile?.full_name?.split(" ")[0] ?? "learner"}!</h1>
-      <p className="text-muted-foreground mt-1">Keep the momentum going.</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold">Welcome back, {data.profile?.full_name?.split(" ")[0] ?? "learner"}!</h1>
+          <p className="text-muted-foreground mt-1">Keep the momentum going.</p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={async () => {
+            try {
+              const res = await claim();
+              toast.success(res.alreadyAdmin ? "You're already an admin — opening /admin" : "You're now the LearnForge admin!");
+              window.location.href = "/admin";
+            } catch (e: any) {
+              toast.error(e?.message ?? "Could not claim admin");
+            }
+          }}
+        >
+          <ShieldCheck className="size-4" /> Claim admin
+        </Button>
+      </div>
 
       <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat icon={<BookOpen className="size-5" />} label="Courses enrolled" value={data.enrollments.length} />
